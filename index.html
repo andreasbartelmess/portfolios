@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>andreas bartelmess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      font-family: 'Manrope', sans-serif;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* ── Layout ────────────────────────────────────────── */
+    .frame {
+      background: #fff;
+      width: 100vw;
+      height: 100dvh;           /* dynamic viewport height – handles mobile chrome bar */
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── Top padding strip ─────────────────────────────── */
+    .top-pad {
+      flex-shrink: 0;
+      height: clamp(12px, 2vw, 36px);
+      padding: 0 clamp(12px, 2vw, 36px);
+    }
+
+    /* ── Image area ────────────────────────────────────── */
+    /* Fills remaining space; image fits inside without cropping */
+    .slideshow-wrap {
+      flex: 1;
+      min-height: 0;
+      padding: 0 clamp(12px, 2vw, 36px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .slideshow {
+      /* size to the largest image that fits, preserving any ratio */
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .slide img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* ── Contact overlay ───────────────────────────────── */
+    .contact-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .contact-bg {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-bg img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .contact-info {
+      position: relative;
+      z-index: 1;
+      pointer-events: auto;
+      text-align: left;
+      color: #000;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: clamp(10px, 1.2vw, 24px) clamp(14px, 1.8vw, 36px);
+    }
+
+    .contact-info .label {
+      font-size: clamp(8px, 0.6vw, 11px);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: #000;
+      margin-bottom: 0.3em;
+    }
+
+    .contact-info .name-line {
+      font-size: clamp(13px, 1.1vw, 20px);
+      font-weight: 500;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .contact-info .name-line a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .contact-info .name-line a:hover { text-decoration: underline; }
+
+    /* ── Nav arrows ────────────────────────────────────── */
+    .nav {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .nav.left  { left: 0;  padding-left:  clamp(4px, 0.5vw, 12px); }
+    .nav.right { right: 0; padding-right: clamp(4px, 0.5vw, 12px); }
+
+    .nav button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: clamp(6px, 0.6vw, 12px) clamp(4px, 0.4vw, 8px);
+      color: #000;
+      font-size: clamp(18px, 1.4vw, 28px);
+      font-weight: 300;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav button:hover { opacity: 1; }
+
+    /* ── Bottom bar ────────────────────────────────────── */
+    .bottom-bar {
+      flex-shrink: 0;
+      height: clamp(36px, 4vw, 60px);
+      padding: 0 clamp(12px, 2vw, 36px);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+
+    .bottom-bar .author {
+      font-size: clamp(13px, 1vw, 18px);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: #000;
+    }
+
+    .bottom-bar .slide-title {
+      text-align: center;
+      font-size: clamp(11px, 0.85vw, 15px);
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: #000;
+    }
+
+    .bottom-bar .contact-wrap { text-align: right; }
+
+    .bottom-bar .contact-wrap button {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(13px, 1vw, 18px);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: #000;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Mobile tweaks ─────────────────────────────────── */
+    @media (max-width: 600px) {
+      .bottom-bar .slide-title { display: none; }
+
+      .contact-info .label   { font-size: 10px; }
+      .contact-info .name-line { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="frame">
+
+  <div class="top-pad"></div>
+
+  <div class="slideshow-wrap">
+
+    <!-- Nav arrows inside image area -->
+    <div class="nav left">
+      <button id="btnPrev" aria-label="Vorheriges Bild">&#8249;</button>
+    </div>
+    <div class="nav right">
+      <button id="btnNext" aria-label="Nächstes Bild">&#8250;</button>
+    </div>
+
+    <div class="slideshow" id="slideshow">
+
+      <!-- 3:2 landscape sample -->
+      <div class="slide active" data-title="Berglandschaft, Allgäu">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1800&q=80" alt="Foto 1" />
+      </div>
+      <!-- 2:3 portrait sample -->
+      <div class="slide" data-title="Porträt, Studio">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=900&h=1350&fit=crop&q=80" alt="Foto 2" />
+      </div>
+      <!-- 3:2 landscape sample -->
+      <div class="slide" data-title="Bergsee, Tirol">
+        <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800&q=80" alt="Foto 3" />
+      </div>
+      <!-- 2:3 portrait sample -->
+      <div class="slide" data-title="Waldweg, Schwarzwald">
+        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&h=1350&fit=crop&q=80" alt="Foto 4" />
+      </div>
+
+      <!-- Contact overlay -->
+      <div class="contact-overlay" id="contactOverlay">
+        <div class="contact-bg" id="contactBg"></div>
+        <div class="contact-info">
+          <div class="label">contact</div>
+          <div class="name-line"><a href="https://andreasbartelmess.de" target="_blank">andreasbartelmess.de</a></div>
+          <div class="name-line"><a href="mailto:info@andreasbartelmess.de">info@andreasbartelmess.de</a></div>
+          <div class="name-line"><a href="tel:+4915735376376">+4915735376376</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <span class="author">andreas bartelmess</span>
+    <span class="slide-title" id="slideTitle"></span>
+    <div class="contact-wrap">
+      <button id="btnContact">contact</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const slides         = Array.from(document.querySelectorAll('.slide'));
+  const contactOverlay = document.getElementById('contactOverlay');
+  const contactBg      = document.getElementById('contactBg');
+  const slideTitle     = document.getElementById('slideTitle');
+  let current          = 0;
+  let contactOpen      = false;
+
+  function currentImgSrc() {
+    return slides[current].querySelector('img').src;
+  }
+
+  function updateTitle() {
+    slideTitle.textContent = slides[current].dataset.title || '';
+  }
+
+  function goTo(index) {
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+    slides.forEach(s => s.classList.remove('active'));
+    current = index;
+    slides[current].classList.add('active');
+    updateTitle();
+  }
+
+  function openContact() {
+    // Clone the actual rendered img so size/position matches exactly
+    const srcImg = slides[current].querySelector('img');
+    contactBg.innerHTML = '';
+    const clone = srcImg.cloneNode();
+    clone.removeAttribute('id');
+    contactBg.appendChild(clone);
+    contactOpen = true;
+    contactOverlay.classList.add('active');
+    slideTitle.textContent = '';
+  }
+
+  function closeContact() {
+    contactOpen = false;
+    contactOverlay.classList.remove('active');
+    updateTitle();
+  }
+
+  document.getElementById('btnPrev').addEventListener('click', () => {
+    contactOpen ? closeContact() : goTo(current - 1);
+  });
+  document.getElementById('btnNext').addEventListener('click', () => {
+    contactOpen ? closeContact() : goTo(current + 1);
+  });
+  document.getElementById('btnContact').addEventListener('click', openContact);
+  document.getElementById('contactBg').addEventListener('click', closeContact);
+
+  // Touch swipe
+  let touchStartX = 0;
+  document.getElementById('slideshow').addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  document.getElementById('slideshow').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) {
+      contactOpen ? closeContact() : goTo(current + (dx < 0 ? 1 : -1));
+    }
+  }, { passive: true });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  contactOpen ? closeContact() : goTo(current - 1);
+    if (e.key === 'ArrowRight') contactOpen ? closeContact() : goTo(current + 1);
+    if (e.key === 'Escape' && contactOpen) closeContact();
+  });
+
+  updateTitle();
+</script>
+
+</body>
+</html>
