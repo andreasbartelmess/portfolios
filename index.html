@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Andreas Bartelmess - Fotografie - Portfolio</title>
+  <title>andreas bartelmess</title>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after {
@@ -66,6 +66,7 @@
     }
 
     .slideshow {
+      touch-action: pan-y;
       position: relative;
       width: 100%;
       height: 100%;
@@ -281,6 +282,14 @@
       }
     }
 
+
+    /* Mobile phones: keep swipe, hide visual arrows */
+    @media (max-width: 699px), (max-height: 520px) and (pointer: coarse) {
+      .nav {
+        display: none;
+      }
+    }
+
     /* Smartphone portrait */
     @media (max-width: 699px) {
       :root {
@@ -324,12 +333,76 @@
       }
     }
 
-    /* Very low screens / mobile landscape */
-    @media (max-height: 460px) {
+    /* Mobile landscape / very low screens */
+    @media (max-height: 520px) and (pointer: coarse) {
       :root {
         --edge: 10px;
         --top: 4px;
-        --bottom: 40px;
+        --bottom: 36px;
+      }
+
+      body {
+        position: fixed;
+        overflow: hidden;
+      }
+
+      .frame {
+        grid-template-rows: var(--top) minmax(0, 1fr) var(--bottom);
+      }
+
+      .slideshow-wrap {
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
+      }
+
+      .bottom-bar {
+        height: var(--bottom);
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
+      }
+
+      .author,
+      .contact-wrap button {
+        font-size: 12.5px;
+        line-height: 1;
+      }
+
+      .contact-wrap button {
+        padding: 7px 0;
+      }
+
+      .slide-title {
+        display: none;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .contact-info {
+        max-width: min(86vw, 460px);
+        padding: 10px 14px;
+      }
+
+      .contact-info .label {
+        font-size: 9px;
+        margin-bottom: 0.2em;
+      }
+
+      .contact-info .name-line {
+        font-size: 13px;
+        line-height: 1.25;
+      }
+    }
+
+    /* Small phones in portrait */
+    @media (max-width: 380px) and (orientation: portrait) {
+      :root {
+        --edge: 10px;
+        --top: 6px;
+        --bottom: 50px;
       }
 
       .author,
@@ -337,8 +410,8 @@
         font-size: 13px;
       }
 
-      .slide-title {
-        display: none;
+      .contact-info {
+        max-width: calc(100vw - 28px);
       }
     }
   </style>
@@ -425,7 +498,15 @@
 
   setViewportHeight();
   window.addEventListener('resize', setViewportHeight);
-  window.addEventListener('orientationchange', () => setTimeout(setViewportHeight, 250));
+  window.addEventListener('orientationchange', () => {
+    setTimeout(setViewportHeight, 80);
+    setTimeout(setViewportHeight, 300);
+    setTimeout(setViewportHeight, 700);
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', setViewportHeight);
+  }
 
   function updateTitle() {
     slideTitle.textContent = contactOpen ? '' : (slides[current].dataset.title || '');
