@@ -210,7 +210,6 @@
       opacity: 0.66;
     }
 
-
     /* ── Cursor-follow image description ───────────────── */
     .frame.image-cursor-active,
     .frame.image-cursor-active * {
@@ -354,264 +353,6 @@
       transition: none;
     }
 
-
-    .nav {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      pointer-events: none;
-    }
-
-    .nav.left {
-      left: 0;
-      padding-left: clamp(2px, 0.6vw, 12px);
-    }
-
-    .nav.right {
-      right: 0;
-      padding-right: clamp(2px, 0.6vw, 12px);
-    }
-
-    .nav button {
-      pointer-events: auto;
-      appearance: none;
-      border: 0;
-      background: transparent;
-      color: #000;
-      font-size: clamp(24px, 2.2vw, 34px);
-      font-weight: 300;
-      line-height: 1;
-      opacity: 0.42;
-      cursor: pointer;
-      padding: 14px 8px;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .nav button:hover {
-      opacity: 1;
-    }
-
-    .bottom-bar {
-      height: var(--bottom);
-      min-width: 0;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
-      align-items: center;
-      gap: 14px;
-      padding: 0 var(--edge);
-      background: #fff;
-      color: #000;
-    }
-
-    .author,
-    .contact-wrap button {
-      font-size: clamp(13px, 1vw, 18px);
-      font-weight: 600;
-      letter-spacing: 0.012em;
-      color: #000;
-      white-space: nowrap;
-    }
-
-    .author {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .slide-title {
-      text-align: center;
-      font-size: clamp(11px, 0.85vw, 15px);
-      font-weight: 430;
-      letter-spacing: 0.06em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 48vw;
-      color: #000;
-      opacity: 1;
-      transition: opacity 0.28s ease;
-      will-change: opacity;
-    }
-
-    .slide-title.changing {
-      opacity: 0;
-    }
-
-    .contact-wrap {
-      text-align: right;
-      min-width: 0;
-    }
-
-    .contact-wrap button {
-      appearance: none;
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      font-family: inherit;
-      padding: 10px 0;
-      -webkit-tap-highlight-color: transparent;
-      transition: opacity 0.22s ease;
-    }
-
-    .contact-wrap button:hover {
-      opacity: 0.66;
-    }
-
-
-    /* ── Cursor-follow image description ───────────────── */
-    .frame.image-cursor-active,
-    .frame.image-cursor-active * {
-      cursor: none;
-    }
-
-    .bottom-bar,
-    .bottom-bar *,
-    .contact-info,
-    .contact-info *,
-    .nav button {
-      cursor: auto;
-    }
-
-    .cursor-orb {
-      position: fixed;
-      left: 0;
-      top: 0;
-      z-index: 60;
-      width: 54px;
-      height: 54px;
-      border-radius: 999px;
-      transform: translate(-50%, -50%) scale(0.92);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      background: rgba(255, 255, 255, 0.23);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.20), inset 0 0 18px rgba(255, 255, 255, 0.10);
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px);
-      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
-      mix-blend-mode: normal;
-    }
-
-    .cursor-orb.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translate(-50%, -50%) scale(1);
-      transition: opacity 0.18s ease, transform 0.18s ease;
-    }
-
-    .cursor-orb.clicked {
-      transform: translate(-50%, -50%) scale(0.82);
-    }
-
-    .image-caption {
-      position: fixed;
-      left: 0;
-      top: 0;
-      z-index: 61;
-      max-width: min(360px, calc(100vw - 36px));
-      transform: translate(18px, 18px);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      padding: 10px 15px;
-      background: rgba(255, 255, 255, 0.84);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color: #000;
-      text-align: left;
-      font-size: clamp(11px, 0.8vw, 14px);
-      font-weight: 400;
-      line-height: 1.35;
-      letter-spacing: 0.04em;
-      transition: opacity 0.2s ease, visibility 0s linear 0.2s;
-    }
-
-    .image-caption.visible {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.2s ease;
-    }
-
-    .image-caption .caption-title {
-      font-weight: 500;
-      letter-spacing: 0.055em;
-      white-space: nowrap;
-    }
-
-    .image-caption .caption-description {
-      margin-top: 0.28em;
-      font-size: 0.92em;
-      letter-spacing: 0.025em;
-      opacity: 0.78;
-    }
-
-    @media (hover: none), (pointer: coarse) {
-      .frame.image-cursor-active,
-      .frame.image-cursor-active * {
-        cursor: auto;
-      }
-
-      .cursor-orb,
-      .image-caption {
-        display: none;
-      }
-    }
-
-    .contact-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 40;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition:
-        opacity 0.48s ease,
-        visibility 0s linear 0.48s;
-    }
-
-    .contact-overlay.active {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transition:
-        opacity 0.48s ease,
-        visibility 0s linear 0s;
-    }
-
-    .contact-overlay.closing {
-      opacity: 0;
-      visibility: visible;
-      pointer-events: none;
-      transition:
-        opacity 0.44s ease,
-        visibility 0s linear 0.44s;
-    }
-
-    .contact-bg {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      opacity: 0;
-      transform: scale(1.012);
-      transition:
-        opacity 0.52s ease,
-        transform 0.72s cubic-bezier(.2,.8,.2,1);
-      will-change: opacity, transform;
-    }
-
-    .contact-bg img {
-      pointer-events: none;
-    }
-
     .contact-info {
       position: relative;
       z-index: 1;
@@ -686,7 +427,6 @@
       }
     }
 
-
     /* Mobile phones: keep swipe, hide visual arrows */
     @media (max-width: 699px), (max-height: 520px) and (pointer: coarse) {
       .nav {
@@ -718,10 +458,6 @@
       .author,
       .contact-wrap button {
         font-size: 14px;
-      }
-
-      .nav {
-        display: none;
       }
 
       .contact-info {
@@ -781,10 +517,6 @@
         display: none;
       }
 
-      .nav {
-        display: none;
-      }
-
       .contact-info {
         max-width: min(86vw, 460px);
         padding: 10px 14px;
@@ -830,7 +562,6 @@
         transition: none !important;
       }
     }
-
   </style>
 </head>
 <body>
@@ -848,32 +579,44 @@
     </div>
 
     <div class="slideshow" id="slideshow">
-      <div class="slide active" data-title="Portrait, Bonn">
+      <div class="slide active" data-title="Portrait, Bonn (2021)" data-description="Freies Portrait als Studienarbeit">
         <img src="https://andreasbartelmess.de/wp-content/uploads/2026/04/Copyright_AndreasBartelmess_IMG_0299_final-1-edited-scaled.jpg" alt="Portrait, Bonn" />
       </div>
 
-      <div class="slide" data-title="Odenwaldhalle" data-description="Architektur und Raum">
+      <div class="slide" data-title="Odenwaldhalle, Michelstadt (2025)" data-description="Studienarbeit über die Odenwaldhalle in Michelstadt">
         <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_odenwaldhalle_01.jpg" alt="Odenwaldhalle" />
       </div>
 
-      <div class="slide" data-title="Wir Komplizen, Dortmund" data-description="Wir Komplizen, Dortmund">
+      <div class="slide" data-title="Wir Komplizen, Dortmund (2023)" data-description="Studienarbeit über das Restaurant &quot;Wir Komplizen&quot;">
         <img src="https://andreasbartelmess.de/wp-content/uploads/2026/03/Copyright_AndreasBartelmess_0018_24-01-04_Adobe-RGB-1998.jpg" alt="Wir Komplizen, Dortmund" />
       </div>
 
-      <div class="slide" data-title="Colorfull Fruits, Dortmund" data-description="Colorfull Fruits, Dortmund">
+      <div class="slide" data-title="Colorfull Fruits, Dortmund (2025)" data-description="Freie Arbeit">
         <img src="https://andreasbartelmess.de/wp-content/uploads/2026/04/cb5ab22b-b369-4f99-b898-6ed2e2d4005a_rw_1200-e1777200581477-edited.jpg" alt="Colorfull Fruits, Dortmund" />
       </div>
 
-      <div class="slide" data-title="Neuer Standard, Koblenz" data-description="Neuer Standard, Koblenz">
+      <div class="slide" data-title="Neuer Standard, Koblenz (2020)" data-description="Corporate Fotos für die Agentur Neuer Standard in Koblenz">
         <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_mattphoto_neuer_standard_01.jpg" alt="Neuer Standard, Koblenz" />
       </div>
 
-      <div class="slide" data-title="Cultivated Spaces, Dortmund" data-description="Cultivated Spaces, Dortmund">
+      <div class="slide" data-title="Cultivated Spaces, Dortmund (2024)" data-description="Studienarbeit zu Kleingärten in der Dortmunder Nordstadt">
         <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_cultivatedspaces_01.jpg" alt="Cultivated Spaces, Dortmund" />
       </div>
 
-      <div class="slide" data-title="Neuer Standard, Koblenz" data-description="Neuer Standard, Koblenz">
+      <div class="slide" data-title="Neuer Standard, Koblenz (2020)" data-description="Corporate Fotos für die Agentur Neuer Standard in Koblenz">
         <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_mattphoto_neuer_standard_02.jpg" alt="Neuer Standard, Koblenz" />
+      </div>
+
+      <div class="slide" data-title="Wir Komplizen, Dortmund (2023)" data-description="Studienarbeit über das Restaurant &quot;Wir Komplizen&quot;">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_Wir_Komplizen_01-scaled.jpg" alt="Wir Komplizen, Dortmund (2023)" />
+      </div>
+
+      <div class="slide" data-title="Mausbachs Brotkörbchen, Brohl-Lützingen (2022)" data-description="Freie Arbeit">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_mattphoto_mausbachs_brotkoerbchen_01-1.jpg" alt="Mausbachs Brotkörbchen, Brohl-Lützingen (2022)" />
+      </div>
+
+      <div class="slide" data-title="Goldbeck Werkseröffnung, Kirchberg (2025)" data-description="Eröffnung des Fertigbetonteilwerks in Kirchberg">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/MPH9611.jpg" alt="Goldbeck Werkseröffnung, Kirchberg (2025)" />
       </div>
 
       <div class="cursor-orb" id="cursorOrb" aria-hidden="true"></div>
@@ -940,7 +683,6 @@
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', setViewportHeight);
   }
-
 
   function getCurrentCaptionData() {
     const slide = slides[current];
@@ -1168,7 +910,7 @@
     }
   });
 
-let touchStartX = 0;
+  let touchStartX = 0;
   let touchStartY = 0;
 
   slideshow.addEventListener('touchstart', (event) => {
