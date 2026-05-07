@@ -473,4 +473,479 @@
 </script>
 
 </body>
+</html><!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>andreas bartelmess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --edge-pad: clamp(12px, 2vw, 36px);
+      --top-pad: clamp(10px, 2vw, 36px);
+      --bottom-bar-h: clamp(42px, 4.3vw, 64px);
+    }
+
+    html, body {
+      font-family: 'Manrope', sans-serif;
+      background: #fff;
+      width: 100%;
+      min-width: 320px;
+      min-height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+      touch-action: manipulation;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    /* ── Layout ────────────────────────────────────────── */
+    .frame {
+      background: #fff;
+      width: 100%;
+      height: 100vh;
+      height: 100svh;
+      height: 100dvh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ── Top padding strip ─────────────────────────────── */
+    .top-pad {
+      flex: 0 0 var(--top-pad);
+      padding: 0 var(--edge-pad);
+    }
+
+    /* ── Image area ────────────────────────────────────── */
+    .slideshow-wrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 0 var(--edge-pad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slideshow {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.5s ease;
+      pointer-events: auto;
+    }
+
+    .slide img {
+      background: transparent;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+      -webkit-touch-callout: none;
+    }
+
+    /* ── Contact overlay ───────────────────────────────── */
+    .contact-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-overlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.4s ease;
+    }
+
+    .contact-overlay:not(.active),
+    .contact-overlay:not(.active) * {
+      pointer-events: none !important;
+    }
+
+    .contact-bg {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-bg img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .contact-info {
+      position: relative;
+      z-index: 1;
+      pointer-events: auto;
+      text-align: left;
+      color: #000;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: clamp(12px, 1.2vw, 24px) clamp(16px, 1.8vw, 36px);
+    }
+
+    .contact-info .label {
+      font-size: clamp(8px, 0.6vw, 11px);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: #000;
+      margin-bottom: 0.3em;
+    }
+
+    .contact-info .name-line {
+      font-size: clamp(13px, 1.1vw, 20px);
+      font-weight: 500;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .contact-info .name-line a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .contact-info .name-line a:hover { text-decoration: underline; }
+
+    /* ── Nav arrows ────────────────────────────────────── */
+    .nav {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .nav.left  { left: 0;  padding-left:  clamp(4px, 0.5vw, 12px); }
+    .nav.right { right: 0; padding-right: clamp(4px, 0.5vw, 12px); }
+
+    .nav button {
+      pointer-events: auto;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: clamp(10px, 0.8vw, 14px) clamp(6px, 0.5vw, 10px);
+      color: #000;
+      font-size: clamp(22px, 1.6vw, 32px);
+      font-weight: 300;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav button:hover { opacity: 1; }
+
+    /* ── Bottom bar ────────────────────────────────────── */
+    .bottom-bar {
+      flex: 0 0 var(--bottom-bar-h);
+      height: var(--bottom-bar-h);
+      min-height: var(--bottom-bar-h);
+      padding: 0 var(--edge-pad);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      background: #fff;
+    }
+
+    .bottom-bar .author {
+      font-size: clamp(13px, 1vw, 18px);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bottom-bar .slide-title {
+      text-align: center;
+      font-size: clamp(11px, 0.85vw, 15px);
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 46vw;
+    }
+
+    .bottom-bar .contact-wrap { text-align: right; }
+
+    .bottom-bar .contact-wrap button {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(13px, 1vw, 18px);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: #000;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── iPad / Tablet tweaks ──────────────────────────── */
+    @media (pointer: coarse) and (min-width: 700px) and (max-width: 1200px) {
+      :root {
+        --edge-pad: clamp(18px, 3vw, 34px);
+        --top-pad: clamp(14px, 2.2vw, 30px);
+        --bottom-bar-h: clamp(54px, 6vw, 76px);
+      }
+
+      .bottom-bar {
+        grid-template-columns: minmax(0, 1fr) minmax(160px, auto) minmax(0, 1fr);
+      }
+
+      .bottom-bar .author,
+      .bottom-bar .contact-wrap button {
+        font-size: clamp(15px, 1.9vw, 19px);
+      }
+
+      .bottom-bar .slide-title {
+        font-size: clamp(12px, 1.45vw, 15px);
+        max-width: 42vw;
+      }
+    }
+
+    /* ── Small mobile tweaks ───────────────────────────── */
+    @media (max-width: 600px) {
+      :root {
+        --edge-pad: 12px;
+        --top-pad: 10px;
+        --bottom-bar-h: 48px;
+      }
+
+      .bottom-bar {
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+      }
+
+      .bottom-bar .slide-title { display: none; }
+      .contact-info .label { font-size: 10px; }
+      .contact-info .name-line { font-size: 15px; white-space: normal; }
+    }
+
+    @supports (-webkit-touch-callout: none) {
+      html, body, .frame { min-height: -webkit-fill-available; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="frame">
+
+  <div class="top-pad"></div>
+
+  <div class="slideshow-wrap">
+
+    <!-- Nav arrows inside image area -->
+    <div class="nav left">
+      <button id="btnPrev" aria-label="Vorheriges Bild" type="button">&#8249;</button>
+    </div>
+    <div class="nav right">
+      <button id="btnNext" aria-label="Nächstes Bild" type="button">&#8250;</button>
+    </div>
+
+    <div class="slideshow" id="slideshow">
+
+      <div class="slide active" data-title="Portrait, Bonn">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/04/Copyright_AndreasBartelmess_IMG_0299_final-1-edited-scaled.jpg" alt="Portrait, Bonn" />
+      </div>
+
+      <div class="slide" data-title="Odenwaldhalle">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_odenwaldhalle_01.jpg" alt="Odenwaldhalle" />
+      </div>
+
+      <div class="slide" data-title="Wir Komplizen, Dortmund">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/03/Copyright_AndreasBartelmess_0018_24-01-04_Adobe-RGB-1998.jpg" alt="Wir Komplizen, Dortmund" />
+      </div>
+
+      
+      <!-- Added image -->
+      <div class="slide" data-title="Colorfull Fruits, Dortmund">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/04/cb5ab22b-b369-4f99-b898-6ed2e2d4005a_rw_1200-e1777200581477-edited.jpg" alt="Colorfull Fruits, Dortmund" loading="eager" decoding="async" />
+      </div>
+
+<div class="slide" data-title="Neuer Standard, Koblenz">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_mattphoto_neuer_standard_01.jpg" alt="Neuer Standard, Koblenz" />
+      </div>
+
+      <div class="slide" data-title="Cultivated Spaces, Dortmund">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_cultivatedspaces_01.jpg" alt="Cultivated Spaces, Dortmund" />
+      </div>
+
+      <div class="slide" data-title="Neuer Standard, Koblenz">
+        <img src="https://andreasbartelmess.de/wp-content/uploads/2026/05/copyright_andreasbartelmess_mattphoto_neuer_standard_02.jpg" alt="Neuer Standard, Koblenz" />
+      </div>
+
+      <!-- Contact overlay -->
+      <div class="contact-overlay" id="contactOverlay" aria-hidden="true" inert>
+        <div class="contact-bg" id="contactBg" aria-label="Kontakt schließen"></div>
+        <div class="contact-info">
+          <div class="label">contact</div>
+          <div class="name-line"><a href="https://andreasbartelmess.de" target="_blank" rel="noopener">andreasbartelmess.de</a></div>
+          <div class="name-line"><a href="mailto:info@andreasbartelmess.de">info@andreasbartelmess.de</a></div>
+          <div class="name-line"><a href="tel:+4915735376376">+4915735376376</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <span class="author">andreas bartelmess</span>
+    <span class="slide-title" id="slideTitle"></span>
+    <div class="contact-wrap">
+      <button id="btnContact" type="button">contact</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const slides         = Array.from(document.querySelectorAll('.slide'));
+  const contactOverlay = document.getElementById('contactOverlay');
+  const contactBg      = document.getElementById('contactBg');
+  const slideTitle     = document.getElementById('slideTitle');
+  let current          = 0;
+  let contactOpen      = false;
+
+  function updateTitle() {
+    slideTitle.textContent = contactOpen ? '' : (slides[current].dataset.title || '');
+  }
+
+  function goTo(index) {
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+    slides.forEach(s => s.classList.remove('active'));
+    current = index;
+    slides[current].classList.add('active');
+    updateTitle();
+  }
+
+  function openContact() {
+    const srcImg = slides[current].querySelector('img');
+    contactBg.innerHTML = '';
+    const clone = srcImg.cloneNode();
+    clone.removeAttribute('id');
+    contactBg.appendChild(clone);
+
+    contactOpen = true;
+    contactOverlay.classList.add('active');
+    contactOverlay.removeAttribute('aria-hidden');
+    contactOverlay.removeAttribute('inert');
+    updateTitle();
+  }
+
+  function closeContact() {
+    contactOpen = false;
+    contactOverlay.classList.remove('active');
+    contactOverlay.setAttribute('aria-hidden', 'true');
+    contactOverlay.setAttribute('inert', '');
+    updateTitle();
+  }
+
+  document.getElementById('btnPrev').addEventListener('click', () => {
+    contactOpen ? closeContact() : goTo(current - 1);
+  });
+
+  document.getElementById('btnNext').addEventListener('click', () => {
+    contactOpen ? closeContact() : goTo(current + 1);
+  });
+
+  document.getElementById('btnContact').addEventListener('click', () => {
+    contactOpen ? closeContact() : openContact();
+  });
+
+  contactBg.addEventListener('click', closeContact);
+
+  // Touch swipe
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  document.getElementById('slideshow').addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].clientX;
+    touchStartY = e.changedTouches[0].clientY;
+  }, { passive: true });
+
+  document.getElementById('slideshow').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+
+    if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      contactOpen ? closeContact() : goTo(current + (dx < 0 ? 1 : -1));
+    }
+  }, { passive: true });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  contactOpen ? closeContact() : goTo(current - 1);
+    if (e.key === 'ArrowRight') contactOpen ? closeContact() : goTo(current + 1);
+    if (e.key === 'Escape' && contactOpen) closeContact();
+  });
+
+  updateTitle();
+</script>
+
+</body>
 </html>
